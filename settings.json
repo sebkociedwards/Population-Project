@@ -1,9 +1,0 @@
-{
-    "min_age": 0,
-    "max_age": 110,
-
-    "input_folder": "input",
-    "output_folder": "output",
-
-    "standardise_lx": true 
-}
