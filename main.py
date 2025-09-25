@@ -1,8 +1,8 @@
 from src import log
-from src.hmd_hfd import generate_hmd_hfd_df
-from src.income_status import generate_income_status_df
+from src.life_table import generate_life_table
+from src.country_table import generate_country_table
     
     
 if __name__ == "__main__":
-    generate_hmd_hfd_df()
-    generate_income_status_df()
+    generate_life_table()
+    generate_country_table()

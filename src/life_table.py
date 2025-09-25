@@ -7,7 +7,7 @@ from src.helper import SETTINGS, OUT_PATH
 from src import log
 
 
-def merge_hmd_hfd(hmd_df: pd.DataFrame, hfd_df: pd.DataFrame):
+def merge_hmd_hfd_df(hmd_df: pd.DataFrame, hfd_df: pd.DataFrame):
     log.log("merging data from HMD and HFD...")
 
     # filter only common country, year pairs
@@ -36,41 +36,16 @@ def merge_hmd_hfd(hmd_df: pd.DataFrame, hfd_df: pd.DataFrame):
     return df
 
 
-def add_calculate_variables(df: pd.DataFrame):
-    # TODO no safety in case variables are not in table
-
-    log.log("calculating additional fields...")
-
-    # force into numbers if not already
-    df["lx"] = pd.to_numeric(df["lx"], errors="coerce")
-    df["ASFR"] = pd.to_numeric(df["ASFR"], errors="coerce")
-
-    # calculations
-    df["lxmx"] = df["lx"] * df["ASFR"]
-    df["lx_next"] = df.groupby(["ISO3", "Year"])["lx"].shift(-1)
-    df["dx"] = df["lx"] - df["lx_next"]
-    df["qx"] = 1 - (df["lx_next"] / df["lx"])
-    df["sx"] = 1 - df["qx"]
-    df["cum_lxmx"] = (
-        df.groupby(["ISO3", "Year"])["lxmx"]
-        .transform(lambda x: x[::-1].cumsum()[::-1])
-    )
-    df["vx"] = df["cum_lxmx"] / df["lx"]
-
-    # delete unneeded columns used for caluculations
-    df.drop(columns=["lx_next", "cum_lxmx"], inplace=True)
-
-    return df
-
-
-def generate_hmd_hfd_df():
+def generate_life_table():
+    # generate formated data from HMD and HFD
     hmd_df = hmd.generate_hmd_df()
     hfd_df = hfd.generate_hfd_df()
 
-    hmd_hfd_df = merge_hmd_hfd(hmd_df, hfd_df)
-    hmd_hfd_df = add_calculate_variables(hmd_hfd_df)
+    # merge data from HMD and HFD
+    hmd_hfd_df = merge_hmd_hfd_df(hmd_df, hfd_df)
 
-    path = os.path.join(OUT_PATH, "hmd_hfd.csv")
+    # export
+    path = os.path.join(OUT_PATH, "life_table.csv")
     hmd_hfd_df.to_csv(path, index=False)
 
     log.log("mereged HMD and HFD dataset successfully, exported as: " + path)

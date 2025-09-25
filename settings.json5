@@ -3,6 +3,7 @@
     "standardise_lx": true,
     "min_age": 0,
     "max_age": 110, // HMD ranges from 0-110
+
     "hmd_path": "data/raw/HMD",
     "hfd_path": "data/raw/HFD/asfr",
     "wb_path": "data/raw/WB",
