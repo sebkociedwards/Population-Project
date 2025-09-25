@@ -1,17 +1,14 @@
 import os
 import pandas as pd
 from src import log
-from src.helper import export_df_to_csv, OUT_PATH
-
-
-HFD_PATH = "project/data/raw/asfr"
+from src.helper import OUT_PATH, SETTINGS
 
 
 # get specified path for hfd and load into dataframe
 def load_hfd() -> pd.DataFrame:
     log.log("loading HFD into memory...")
 
-    path = HFD_PATH
+    path = SETTINGS["hfd_path"]
 
     # TODO implement method to choose asfr - e.g. RR (registered births, resident mothers), TR (total births, resident mothers)
     asfr_type = "RR"
@@ -44,7 +41,7 @@ def generate_hfd_df():
     hfd_df = format_hfd(raw_hfd_df)
 
     path = os.path.join(OUT_PATH, "hfd.csv")
-    export_df_to_csv(hfd_df, path)
+    hfd_df.to_csv(path, index=False)
 
-    log.log("formated HFD successfully exported as: " + path)
+    log.log("formated HFD successfully, exported as: " + path)
     return hfd_df

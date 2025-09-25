@@ -3,12 +3,7 @@ import json5, os
 import pandas as pd
 
  
-SETTINGS_FILE = "project/settings.json5"
-
-
-def export_df_to_csv(df: pd.DataFrame, path: str):
-    path = os.path.join(OUT_PATH, path)
-    df.to_csv(path, index=False)
+SETTINGS_FILE = "settings.json5"
 
 
 # timestamp functions

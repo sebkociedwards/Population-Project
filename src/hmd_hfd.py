@@ -3,7 +3,7 @@
 import os
 from src import hmd, hfd
 import pandas as pd
-from src.helper import SETTINGS, export_df_to_csv, OUT_PATH
+from src.helper import SETTINGS, OUT_PATH
 from src import log
 
 
@@ -71,5 +71,6 @@ def generate_hmd_hfd_df():
     hmd_hfd_df = add_calculate_variables(hmd_hfd_df)
 
     path = os.path.join(OUT_PATH, "hmd_hfd.csv")
-    export_df_to_csv(hmd_hfd_df, path)
-    log.log("mereged HMD and HFD dataset successfully exported as: " + path)
+    hmd_hfd_df.to_csv(path, index=False)
+
+    log.log("mereged HMD and HFD dataset successfully, exported as: " + path)

@@ -1,17 +1,14 @@
 import os
 import pandas as pd
-from src.helper import SETTINGS, export_df_to_csv, OUT_PATH
+from src.helper import SETTINGS, OUT_PATH
 from src import log
-
-
-HMD_PATH = "project/data/raw/HMD"
 
 
 # get specified path for hmd and load into dataframe
 def load_hmd() -> pd.DataFrame:
     log.log("loading HMD into memory...")
 
-    path = HMD_PATH
+    path = SETTINGS["hmd_path"]
 
     # find sex file
     sex = SETTINGS["hmd_sex"]
@@ -64,7 +61,7 @@ def generate_hmd_df() -> pd.DataFrame:
     hmd_df = format_hmd(raw_hmd_df)
 
     path = os.path.join(OUT_PATH, "hmd.csv")
-    export_df_to_csv(hmd_df, path)
+    hmd_df.to_csv(path, index=False)
 
-    log.log("formated HMD successfully exported as: " + path)
+    log.log("formated HMD successfully, exported as: " + path)
     return hmd_df
