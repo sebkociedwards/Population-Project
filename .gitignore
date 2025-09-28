@@ -1,19 +1,6 @@
 .env
-
-# Ignore everything in data/
-data/*
-# But keep the raw and processed subfolders
-!data/raw/
-!data/processed/
-# Still ignore everything inside those subfolders...
-data/raw/*
-data/processed/*
-# ...except for the placeholder files
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-
-outputs/* 
-!outputs/.gitkeep
-
 __pycache__/
-.DS_Store
+src/__pycache__/
+*.pyc
+data/
+outputs/

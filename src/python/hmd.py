@@ -7,10 +7,11 @@ from src.python import log
 
 login_url = "https://www.mortality.org/Account/Login"
 download_url = "https://www.mortality.org/File/GetDocument/hmd.v6/zip/by_statistic/lt_female.zip"
+download_path = os.path.join(DOWNLOAD_FOLDER, "HMD")
 
 
 # downloads the hmd
-def download_hmd() -> str:
+def download_hmd():
     # run session to persist with cookies
     with requests.Session() as s:
         # get anti-forgery token
@@ -48,15 +49,12 @@ def download_hmd() -> str:
 
         # extract .zip file to output directory
         with zipfile.ZipFile(io.BytesIO(r.content)) as file:
-            path = os.path.join(DOWNLOAD_FOLDER, "HMD")
-            file.extractall(path)
-        log.log("HMD .zip successfully extracted to: " + path)
-
-        return path
+            file.extractall(download_path)
+        log.log("HMD .zip successfully extracted to: " + download_path)
 
 
 # get specified path for hmd and load into dataframe
-def load_hmd(path: str) -> pd.DataFrame:
+def load_hmd(path) -> pd.DataFrame:
     value = "1x1"
     dirs = [f for f in os.listdir(path) if f.endswith(f"_{value}")]
     if len(dirs) != 1: log.error("HMD age class directories are indistinguishable or not found", path)
@@ -94,13 +92,21 @@ def format_hmd(df: pd.DataFrame) -> pd.DataFrame:
         df["lx"] = df["lx"] / df["lx0"]
         df.drop(columns="lx0", inplace=True)
 
+    # drop last row of every group because values are 110+, not 110
+    if SETTINGS["include_edge_data"] == False:
+        df = (
+            df.groupby(["ISO3", "Year"], group_keys=False)
+            .apply(lambda g: g.iloc[:-1])
+        )
+
     log.log("formatted the HMD")
     return df
 
 
 def generate_hmd_df() -> pd.DataFrame:
-    path = download_hmd()
-    raw_hmd_df = load_hmd(path)
+    if SETTINGS["download"]: download_hmd()
+
+    raw_hmd_df = load_hmd(download_path)
     hmd_df = format_hmd(raw_hmd_df)
 
     path = os.path.join(OUT_PATH, "hmd.csv")

@@ -1,13 +1,14 @@
 import os, requests
 import pandas as pd
-from src.python.helper import OUT_PATH, DOWNLOAD_FOLDER
+from src.python.helper import OUT_PATH, DOWNLOAD_FOLDER, SETTINGS
 from src.python import log
 
 
 download_url = "https://ddh-openapi.worldbank.org/resources/DR0095334/download"
+download_path = os.path.join(DOWNLOAD_FOLDER, "WBLG", "WorldBank_Country_LendingGroups.xlsx")
 
 
-def download_income_status() -> str:
+def download_income_status():
     # no need to login for world bank
 
     with requests.Session() as s:
@@ -21,20 +22,18 @@ def download_income_status() -> str:
             raise RuntimeError()
 
         # make sure output directory exists
-        path = os.path.join(DOWNLOAD_FOLDER, "WB")
+        path = os.path.dirname(download_path)
         os.makedirs(path, exist_ok=True)
 
         # IMPORTANT: for world bank, path include file name.xlxs
-        path = os.path.join(path, "WorldBank_Country_LendingGroups.xlsx")
+        path = download_path
         with open(path, "wb") as f:
             f.write(r.content)
     
         log.log("successfully downloaded .xlxs from the WBLG")
 
-    return path
 
-
-def load_income_status(path: str) -> pd.DataFrame:
+def load_income_status(path) -> pd.DataFrame:
     df = pd.read_excel(path, sheet_name="Country Analytical History")
   
     log.log("loaded the WBLG data into memory")
@@ -64,8 +63,9 @@ def format_income_status(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def generate_income_status_df():
-    path = download_income_status()
-    raw_income_status_df = load_income_status(path)
+    if SETTINGS["download"]: download_income_status()
+
+    raw_income_status_df = load_income_status(download_path)
     income_status_df = format_income_status(raw_income_status_df)
 
     path = os.path.join(OUT_PATH, "income_status.csv")

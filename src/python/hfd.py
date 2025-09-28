@@ -1,15 +1,16 @@
 import os, requests, zipfile, io
 import pandas as pd
 from bs4 import BeautifulSoup
-from src.python.helper import OUT_PATH, DOWNLOAD_FOLDER, EMAIL, PASSWORD
+from src.python.helper import OUT_PATH, DOWNLOAD_FOLDER, EMAIL, PASSWORD, SETTINGS
 from src.python import log
 
 
 login_url = "https://www.humanfertility.org/Account/Login"
 download_url = "https://www.humanfertility.org/File/Download/Files/zip/asfr.zip"
+download_path = os.path.join(DOWNLOAD_FOLDER, "HFD")
 
 
-def download_hfd() -> str:
+def download_hfd():
     # run session to persist with cookies
     with requests.Session() as s:
         # get anti-forgery token
@@ -47,11 +48,8 @@ def download_hfd() -> str:
 
         # extract .zip file to output directory
         with zipfile.ZipFile(io.BytesIO(r.content)) as file:
-            path = os.path.join(DOWNLOAD_FOLDER, "HFD")
-            file.extractall(path)
-        log.log("HFD .zip successfully extracted to: " + path)
-
-        return path
+            file.extractall(download_path)
+        log.log("HFD .zip successfully extracted to: " + download_path)
 
 
 # get specified path for hfd and load into dataframe
@@ -75,16 +73,24 @@ def load_hfd(path) -> pd.DataFrame:
 
 
 def format_hfd(df: pd.DataFrame) -> pd.DataFrame:
-    df.rename(columns={"Code": "ISO3"}, inplace=True)
+    df.rename(columns={"Code": "ISO3", "ASFR": "mx"}, inplace=True)
     df["Age"] = pd.to_numeric(df["Age"].str.extract(r"(\d+)")[0], errors="coerce") # force age to be numeric, get rid of signs (e.g. +)
+
+    # drop first and last row of every group because 12- and 55+
+    if SETTINGS["include_edge_data"] == False:
+        df = (
+            df.groupby(["ISO3", "Year"], group_keys=False)
+            .apply(lambda g: g.iloc[1:-1])
+        )
 
     log.log("formatted the HFD")
     return df
 
 
 def generate_hfd_df():
-    path = download_hfd()
-    raw_hfd_df = load_hfd(path)
+    if SETTINGS["download"]: download_hfd()
+
+    raw_hfd_df = load_hfd(download_path)
     hfd_df = format_hfd(raw_hfd_df)
 
     path = os.path.join(OUT_PATH, "hfd.csv")
