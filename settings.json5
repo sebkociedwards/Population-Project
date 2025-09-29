@@ -1,7 +1,7 @@
 {
-    "standardise_lx": true,
+    "standardise_lx": false,
     "min_age": 0,
     "max_age": 110, // HMD ranges from 0-109
     "include_edge_data": true, // data on edge of database (e.g. 12-, 55+, 110+)
-    "download": true
+    "download": false
 }

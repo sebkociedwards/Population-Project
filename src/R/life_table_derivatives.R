@@ -28,10 +28,10 @@ for (g in groups) {
   mx <- as.numeric(df$mx[g])
   
   dx <- matrix(NA, n-1)
-  sx <- matrix(NA, n)
+  sx <- matrix(NA, n - 1)
   px <- matrix(NA, n)
   qx <- matrix(NA, n)
-  vx <- matrix(NA, n-1)
+  vx <- matrix(NA, n)
   
   # dx and sx
   for (i in 1:(n-1)) {
@@ -45,10 +45,10 @@ for (g in groups) {
   df$sx[g] <- sx
   
   # px (lxmx)
-  for (i in 1:n) {
-    # lxmx = lx * mx
-    px[i] <- lx[i] * mx[i]
-  }
+  # lxmx = lx * mx
+  px <- lx * mx
+  px_clean <- ifelse(is.na(px), 0, px)
+  R0 <- sum(px_clean)
   df$px[g] <- px
   
   # qx
@@ -62,10 +62,12 @@ for (g in groups) {
   df$qx[g] <- qx
   
   # vx
-  for (i in 1:n) {
+  vx <- qx * lx
+  #for (i in 1:n) {
     # vx = q(x + 1)^2 / l(x + 1)^2
-    vx[i] <- qx[i] / lx[i]
-  }
+  #  vx[i] <- qx[i] / lx[i]
+    #vx[i] <- qx[i] / (R0 * lx[i]) # normalised with R0
+  #}
   df$vx[g] <- vx
 }
 

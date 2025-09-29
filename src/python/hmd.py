@@ -82,15 +82,21 @@ def format_hmd(df: pd.DataFrame) -> pd.DataFrame:
     df = df[hmd_variables].copy() # filter for selected columns
     df.rename(columns={"PopName": "ISO3"}, inplace=True) 
     df["Age"] = pd.to_numeric(df["Age"].str.extract(r"(\d+)")[0], errors="coerce") # force age to be numeric, get rid of signs (e.g. +)
-    
-    # normalise data 
-    if SETTINGS["standardise_lx"] and "lx" in df.columns:
-        # normalise lx 0-1 instead of per 100,000
-        df["lx"] = pd.to_numeric(df["lx"], errors="coerce")
-        lx0 = (df.loc[df["Age"] == 0, ["ISO3", "Year", "lx"]].rename(columns={"lx": "lx0"})) # relative to the age 0 of each sub-selection (country, year)
-        df = df.merge(lx0, on=["ISO3", "Year"], how="left")
-        df["lx"] = df["lx"] / df["lx0"]
-        df.drop(columns="lx0", inplace=True)
+
+    # keep original survivorship as K (radix scale, e.g. per 100,000)
+    df.rename(columns={"lx": "K"}, inplace=True)
+    df["K"] = pd.to_numeric(df["K"], errors="coerce")
+
+    # base at Age==0 when present
+    base0 = (
+    df.loc[df["Age"] == 0, ["ISO3", "Year", "K"]].rename(columns={"K": "K0"}))
+
+    # merge K0
+    df = df.merge(base0, on=["ISO3", "Year"], how="left")
+
+    # normalise lx with l0 = 1
+    df["lx"] = df["K"] / df["K0"]
+    df.drop(columns="K0", inplace=True)
 
     # drop last row of every group because values are 110+, not 110
     if SETTINGS["include_edge_data"] == False:

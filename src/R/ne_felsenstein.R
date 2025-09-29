@@ -16,7 +16,7 @@ ne_list <- lapply(groups, function(g) {
   
   # index N1 where age == 1
   #i <- which(life$Age[g] == 1)
-  #N1 <- life$lx[g][i[1]]
+  #N1 <- life$K[g][i[1]]
   N1 <- 1 # relative N1 until we have age-1 census
   
   # T from country table for the same ISO3 and year
@@ -32,16 +32,19 @@ ne_list <- lapply(groups, function(g) {
   numerator <- N1 * T
   
   # compute terms, keeping only rows where every factor is finite
-  vx_next <- vx[-1]
-  ok <- is.finite(lx) & is.finite(sx) & is.finite(dx) & is.finite(vx_next)
-  term <- lx[ok] * sx[ok] * dx[ok]* vx_next[ok]^2
-  denominator <- sum(term, na.rm = TRUE)
+  i <- seq_len(length(g) - 1L)
+  ok <- is.finite(lx[i]) & is.finite(sx[i]) & is.finite(dx[i]) & is.finite(vx[i + 1])
+  term <- lx[ok] * sx[ok] * dx[ok]* vx[i + 1][ok]^2
+  denominator <- sum(term, na.rm = TRUE) # should have 1 + sum, but doesn't seem to work
 
   Ne <- numerator / denominator
   
   data.frame(
     ISO3 = iso,
     Year = year,
+    N1 = N1,
+    numerator = numerator,
+    denominator = denominator,
     Ne = Ne,
     stringsAsFactors = FALSE
   )
