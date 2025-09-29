@@ -35,7 +35,7 @@ def run_r(path: str, *args: str):
     if res.stderr: # apparently some R packages write informative messages to stderr, so logging them to log.log, not to log.error
         log.log(f"[R stderr] {res.stderr.strip()}")
     if res.returncode != 0:
-        log.error(f"R script failed: {os.path.basename(path)} (exit {res.returncode}). R stderr: {res.stderr.strip()}")
+        log.error(f"R script failed: {os.path.basename(path)} (exit {res.returncode}). [R stderr] {res.stderr.strip()}")
 
 
 if __name__ == "__main__":
