@@ -1,10 +1,6 @@
 # Instructions
 
-<<<<<<< HEAD
-### Setup
-=======
 ## Setup 
->>>>>>> 6cffa6431b60daa20a60a64990181478dc6628b6
 
 ### MacOS
 ```
