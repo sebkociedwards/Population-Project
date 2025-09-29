@@ -11,15 +11,23 @@ ne_felsenstein_R = "src/R/ne_felsenstein.R"
 
 
 def run_r(path: str, *args: str):
-    try:
+    version = SETTINGS["r_version"]
+
+    try: # MacOS
         cmd = ["Rscript", path, *map(str, args)]
         res = subprocess.run(cmd,capture_output=True, text=True)
-        log.log(f"ran R: {path}")
-    except:
-        rscript_path = fr"{SETTINGS['rscript_path']}\Rscript"
-        cmd = [rscript_path, "--vanilla", path, *map(str, args)]
-        res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
-        log.log(f"ran R: {path}")
+        log.log(f"ran R (MacOS): {path}")
+    except: 
+        try: # Win 64
+            rscript_path = fr"C:\Program Files\R\{version}\bin\Rscript"
+            cmd = [rscript_path, "--vanilla", path, *map(str, args)]
+            res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+            log.log(f"ran R (Win x64): {path}")
+        except: # Win 86
+            rscript_path = fr"C:\Program Files (x86)\R\{version}\bin\Rscript"
+            cmd = [rscript_path, "--vanilla", path, *map(str, args)]
+            res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+            log.log(f"ran R (Win x86): {path}")
     
     if res.stdout:
         log.log(res.stdout.strip())
