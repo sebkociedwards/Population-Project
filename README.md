@@ -4,7 +4,7 @@
 
 1. Create a file with the name .env within the project folder.
 2. Copy the contents from the file .env.example into the .env file youb created.
-3. Enter the information (ensure you have the same email and password for both [HFD](https://www.humanfertility.org/) and [HMD](https://www.mortality.org/))
+3. Enter the information (ensure you have the same email and password for both [HFD](https://www.humanfertility.org/) and [HMD](https://www.mortality.org/)
 
 ## Requirements
 
