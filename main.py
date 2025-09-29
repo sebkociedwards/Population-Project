@@ -16,7 +16,7 @@ def run_r(path: str, *args: str):
         res = subprocess.run(cmd,capture_output=True, text=True)
         log.log(f"ran R: {path}")
     except:
-        rscript_path = f"{SETTINGS["rscript_path"]}\Rscript"
+        rscript_path = fr"{SETTINGS['rscript_path']}\Rscript"
         cmd = [rscript_path, "--vanilla", path, *map(str, args)]
         res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
         log.log(f"ran R: {path}")

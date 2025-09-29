@@ -2,5 +2,5 @@
   min_age: 0,
   max_age: 110, // HMD ranges from 0-109
   include_edge_data: true, // data on edge of database (e.g. 12-, 55+, 110+)
-  rscript_path: "C:Program FilesRR-4.5.1\bin",
+  rscript_path: "C:\\Program Files\\R\\R-4.5.1\\bin",
 }
