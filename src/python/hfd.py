@@ -44,7 +44,7 @@ def download_hfd():
         if not r.content:
             log.error("could not download .zip content from the HFD")
             raise RuntimeError()
-        log.log("successfully downloaded .zi from the HFD")
+        log.log("successfully downloaded .zip from the HFD")
 
         # extract .zip file to output directory
         with zipfile.ZipFile(io.BytesIO(r.content)) as file:
