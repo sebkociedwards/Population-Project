@@ -4,7 +4,7 @@
 
 #### MacOS
 
-```bash
+```
 python3 -m venv .venv
 source .venv/bin/activate
 
@@ -13,13 +13,34 @@ pip install -r requirements.txt
 
 #### Windows
 
-```cmd
+```
 python3 -m venv .venv
 .venv/Scripts/Activate
 
 pip install requirements.txt
 ```
 
+### Execution
+
+#### Commands
+
+Primary command to download the databases from the internet, and run the program for formatting and analyses.
+
+```
+python3 main.py --download
+```
+
+Default command after data has been downloaded. Code is ran on the previously downloaded data.
+
+```
+python3 main.py
+```
+
+For more help:
+
+```
+python3 main.py --help
+```
 Data collection:
 
 HMD data: https://www.mortality.org/Data/ZippedDataFiles
