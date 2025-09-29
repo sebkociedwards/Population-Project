@@ -30,7 +30,16 @@ def merge_hmd_hfd_df(hmd_df: pd.DataFrame, hfd_df: pd.DataFrame):
     df = grid.merge(hmd_df, on=["ISO3", "Year", "Age"], how="left")
     df = df.merge(hfd_df, on=["ISO3", "Year", "Age"], how="left")
 
-    log.log("merged the HMD and HFD tables")
+    # split ISO3 into base and suffix
+    iso3 = df["ISO3"].copy().astype(str).str.upper().str.strip()
+    df["ISO3"] = iso3.str.slice(0, 3)
+    df["ISO3_suffix"] = iso3.str.slice(3).replace("", pd.NA)
+
+    # reorder
+    front = ["ISO3", "ISO3_suffix", "Year", "Age"]
+    df = df[[*front, *[c for c in df.columns if c not in front]]]
+
+    log.log("merged the HMD and HFD tables and separated ISO3 from the suffix")
     return df
 
 

@@ -52,11 +52,14 @@ def format_income_status(df: pd.DataFrame) -> pd.DataFrame:
     df.drop(index=range(0, 6), inplace=True) # remove rows before start of data
 
     # transpose the dataframe from wide to long
-    df_long = df.melt(id_vars=["ISO3"], var_name="Year", value_name="income_status")
+    df_long = df.melt(id_vars=["ISO3"], var_name="Year", value_name="IS")
     df_long["Year"] = df_long["Year"].astype(int)
 
     # sort to country is completed before moving to next
     df_long = df_long.sort_values(by=["ISO3", "Year"]).reset_index(drop=True)
+    
+    # replace .. with NA
+    df_long["IS"] = df_long["IS"].replace("..", "NA")
 
     log.log("formated the income status of countries")
     return df_long

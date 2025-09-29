@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from src.python import income_status
+from src.python import income_status, log
 from src.python.helper import SETTINGS, OUT_PATH
 
 
@@ -18,11 +18,21 @@ def format_country_table(income_status_df: pd.DataFrame, life_table_df: pd.DataF
     inc["ISO3"] = inc["ISO3"].astype(str).str.upper().str.strip()
     life["ISO3"] = life["ISO3"].astype(str).str.upper().str.strip()
 
-    # keep only rows with ISO3 in life table
-    keep = set(life["ISO3"].dropna().unique())
-    out = inc[inc["ISO3"].isin(keep)]
+    # index of unique (iso3, iso3_suffix, year)
+    idx: pd.DataFrame = (
+        life[["ISO3", "ISO3_suffix", "Year"]]
+        .drop_duplicates()
+    )
 
-    return out
+    # merge income (iso3, year) only
+    out = idx.merge(
+        inc[["ISO3", "Year", "IS"]],
+        on=["ISO3", "Year"],
+        how="left"
+    ).sort_values(["ISO3", "ISO3_suffix", "Year"])
+
+    log.log("formated the country table")
+    return out[["ISO3", "ISO3_suffix", "Year", "IS"]]
 
 
 def generate_country_table(life_table_path, download: bool):
