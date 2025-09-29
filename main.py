@@ -13,6 +13,7 @@ ne_felsenstein_R = "src/R/ne_felsenstein.R"
 def run_r(path: str, *args: str):
     version = SETTINGS["r_version"]
 
+    # find correct OS to run the r from
     try: # MacOS
         cmd = ["Rscript", path, *map(str, args)]
         res = subprocess.run(cmd,capture_output=True, text=True)
