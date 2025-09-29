@@ -22,25 +22,25 @@ pip install requirements.txt
 
 ### Execution
 
-#### Commands
-
+#### Download and run
 Primary command to download the databases from the internet, and run the program for formatting and analyses.
-
 ```
 python3 main.py --download
 ```
 
+#### Run
 Default command after data has been downloaded. Code is ran on the previously downloaded data.
-
 ```
-python3 main.py
+python3 main.py 
 ```
 
-For more help:
-
+#### Help
+For more help.
 ```
 python3 main.py --help
 ```
+
+
 Data collection:
 
 HMD data: https://www.mortality.org/Data/ZippedDataFiles
