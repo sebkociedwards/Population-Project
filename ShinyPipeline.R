@@ -40,8 +40,14 @@ var_sources <- list(
     H_N = "country_table",
     mx_norm_ratio = "country_table",
     mx_skew = "country_table",
-    mx_kurtosis = "country_table"
+    mx_kurtosis = "country_table",
+    B = "country_table",                    # ← ADD
+    M = "country_table",                    # ← ADD
+    Z = "country_table",                    # ← ADD
+    PrR = "country_table",                  # ← ADD
+    prop_survive_to_M = "country_table"     # ← ADD
 )
+
 
 var_display_names <- c(
     "Age" = "Age",
@@ -55,7 +61,12 @@ var_display_names <- c(
     "H_N" = "H_N",
     "mx_norm_ratio" = "R0/TFR",
     "mx_skew" = "mx Skew",
-    "mx_kurtosis" = "mx Kurtosis"
+    "mx_kurtosis" = "mx Kurtosis",
+    "B" = "Fertility Start (B)",                        # ← ADD
+    "M" = "Fertility End (M)",                          # ← ADD
+    "Z" = "Cohort Longevity (Z)",                       # ← ADD
+    "PrR" = "Post-fertile Ratio (PrR)",                 # ← ADD
+    "prop_survive_to_M" = "Survival to M"               # ← ADD
 )
 
 # Define UI
@@ -698,18 +709,23 @@ server <- function(input, output, session) {
             }
           }
         }
-        
-        legend(x = "bottom",
-               title = "Countries",
-               legend = available_countries,
-               col = colors[1:n_countries],
-               lwd = if(plot_type == "line") 2.5 else NA,
-               pch = if(plot_type == "scatter") 19 else NA,
-               bty = "n",
-               ncol = n_cols_legend,
-               cex = 0.8,
-               xpd = TRUE,
-               inset = c(0, -0.35))
+
+
+# Calculate dynamic inset based on number of legend rows
+# Formula: base inset (0.25) + 0.08 per additional row
+legend_inset <- -0.25 - (legend_rows * 0.08)
+
+legend(x = "bottom",
+       title = "Countries",
+       legend = available_countries,
+       col = colors[1:n_countries],
+       lwd = if(plot_type == "line") 2.5 else NA,
+       pch = if(plot_type == "scatter") 19 else NA,
+       bty = "n",
+       ncol = n_cols_legend,
+       cex = 0.8,
+       xpd = TRUE,
+       inset = c(0, legend_inset))  
       }
     }
     

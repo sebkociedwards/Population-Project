@@ -1,10 +1,8 @@
-
-
 import os
 import pandas as pd
-from src.python import hmd, hfd, log
+from src.python import hmd, hfd, hg, log
 from src.python.helper import SETTINGS, OUT_PATH
-
+from src.python.helper import SETTINGS, OUT_PATH
 
 def merge_hmd_hfd_df(hmd_df: pd.DataFrame, hfd_df: pd.DataFrame):
     # filter only common country, year pairs
@@ -48,19 +46,40 @@ def merge_hmd_hfd_df(hmd_df: pd.DataFrame, hfd_df: pd.DataFrame):
 
 
 def generate_life_table(download: bool) -> str:
-    # generate formated data from HMD and HFD
+    # generate formatted data from HMD and HFD
     hmd_df = hmd.generate_hmd_df(download)
     hfd_df = hfd.generate_hfd_df(download)
-
+    
+    # Generate HG data (no download needed, it's local)
+    hg_df = hg.generate_hg_df()
 
     # merge data from HMD and HFD and export
     hmd_hfd_df = merge_hmd_hfd_df(hmd_df, hfd_df)
+    
+    # ADD: Combine with HG data
+    if not hg_df.empty:
+        log.log(f"adding HG data to life table...")
+        
+        # Get all columns from HMD/HFD merged data
+        all_columns = hmd_hfd_df.columns.tolist()
+        
+        # Add missing columns to HG data with NaN (will be calculated by R)
+        for col in all_columns:
+            if col not in hg_df.columns:
+                hg_df[col] = None
+        
+        # Ensure column order matches
+        hg_df = hg_df[all_columns]
+        
+        # Concatenate
+        combined_df = pd.concat([hmd_hfd_df, hg_df], ignore_index=True)
+        log.log(f"combined HMD/HFD with HG data: {len(hmd_hfd_df)} + {len(hg_df)} = {len(combined_df)} rows")
+    else:
+        combined_df = hmd_hfd_df
+        log.log("no HG data to merge, using only HMD/HFD")
+    
     path = os.path.join(OUT_PATH, "life_table.csv")
-    hmd_hfd_df.to_csv(path, index=False)
-
+    combined_df.to_csv(path, index=False)
     
-    
-   
-
-    log.log("succesfully generated the merged life table: " + path)
+    log.log("successfully generated the merged life table: " + path)
     return path

@@ -71,6 +71,7 @@ if __name__ == "__main__":
     run_r(generation_time_R, life_table_path, country_table_path) # calculation generation time
     run_r(ne_felsenstein_R, life_table_path, country_table_path) # calculate Ne according to felsenstein
     run_r("src/R/mx_shape_metrics.R", life_table_path, country_table_path) #calculate mx with skew
+    run_r("src/R/prr_calculation.R", life_table_path, country_table_path)
     # plot data; had to get rid of run r as r needs to keep running for r shiny
     
     log.log(f"SHINY_DATA_DIR is set to: {processed}")
