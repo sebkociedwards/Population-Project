@@ -40,13 +40,13 @@ The entry point of this program is the main.py, which orchestrates the data coll
 - **R 4.5.1** (for data handeling and processing - specified in settings.json5)
 
 ### Required R Packages 
-'''r
+```r
 - shiny
 - bs4Dash
 - data.table
 - shinyWidgets
 - RColorBrewer
-'''
+```
 
 ### Required Python Packages
 See `requirements.txt`:
