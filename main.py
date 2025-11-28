@@ -1,4 +1,4 @@
-import os, subprocess, argparse
+import os, subprocess, argparse, sys
 from sys import stderr, stdout
 from src.python.life_table import generate_life_table
 from src.python.country_table import generate_country_table
@@ -42,13 +42,38 @@ def run_r(path: str, *args: str):
         log.error(f"R script failed: {os.path.basename(path)} (exit {res.returncode}). [R stderr] {res.stderr.strip()}")
 
 
+def env_contains_values():
+    # check if .env has email and password and exists
+    try:
+        with open(".env") as f:
+            for line in f:
+                if line.strip().endswith("="):  
+                    return False
+        return True
+    except:
+        return False
+    
+    
 if __name__ == "__main__":
     #debug
     import os
     log.log(f"Python is running from: {os.getcwd()}")
     log.log(f"ShinyPipeline.R exists here: {os.path.exists('ShinyPipeline.R')}")
     
-    
+
+
+     # if .env is not correct, generate
+    if not env_contains_values():
+        email = input("Enter your email (HMD/HFD): ")
+        password = input("Enter your password (HMD/HFD): ")
+        
+        with open(".env", "w") as f:
+            f.write(f"EMAIL={email}\n")
+            f.write(f"PASSWORD={password}\n")
+        
+        # rerun the program
+        os.execv(sys.executable, [sys.executable] + sys.argv)
+        
     parser = argparse.ArgumentParser()
     parser.add_argument("--download", action="store_true", help="Download data")
     args = parser.parse_args()
