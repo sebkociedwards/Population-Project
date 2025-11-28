@@ -14,9 +14,9 @@ read_start <- Sys.time()
 cat("Reading CSVs...\n")
 life <- fread(life_table_path)
 country <- fread(country_table_path)
-cat(sprintf("  ✓ CSV reading took: %.2f seconds\n", difftime(Sys.time(), read_start, units="secs")))
-cat(sprintf("  ✓ Life table rows: %d\n", nrow(life)))
-cat(sprintf("  ✓ Country table rows: %d\n", nrow(country)))
+cat(sprintf("  CSV reading took: %.2f seconds\n", difftime(Sys.time(), read_start, units="secs")))
+cat(sprintf("  Life table rows: %d\n", nrow(life)))
+cat(sprintf("  Country table rows: %d\n", nrow(country)))
 
 # === TIMING: Calculations ===
 calc_start <- Sys.time()
@@ -64,21 +64,21 @@ Ne_results <- life[, {
   }
 }, by = .(ISO3, ISO3_suffix, Year)]
 
-cat(sprintf("  ✓ Calculations took: %.2f seconds\n", difftime(Sys.time(), calc_start, units="secs")))
-cat(sprintf("  ✓ Calculated Ne for %d country-years\n", nrow(Ne_results)))
+cat(sprintf("  Calculations took: %.2f seconds\n", difftime(Sys.time(), calc_start, units="secs")))
+cat(sprintf("  Calculated Ne for %d country-years\n", nrow(Ne_results)))
 
 # === TIMING: Merge ===
 merge_start <- Sys.time()
 cat("Merging results with country table...\n")
 out <- merge(country, Ne_results, by = c("ISO3", "ISO3_suffix", "Year"), all = TRUE)
 setorder(out, ISO3, ISO3_suffix, Year)
-cat(sprintf("  ✓ Merge took: %.2f seconds\n", difftime(Sys.time(), merge_start, units="secs")))
+cat(sprintf("  Merge took: %.2f seconds\n", difftime(Sys.time(), merge_start, units="secs")))
 
 # === TIMING: Write ===
 write_start <- Sys.time()
 cat("Writing output CSV...\n")
 fwrite(out, country_table_path)
-cat(sprintf("  ✓ Writing took: %.2f seconds\n", difftime(Sys.time(), write_start, units="secs")))
+cat(sprintf("  Writing took: %.2f seconds\n", difftime(Sys.time(), write_start, units="secs")))
 
 # === TIMING: Total ===
 total_time <- difftime(Sys.time(), script_start, units="secs")

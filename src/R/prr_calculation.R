@@ -25,8 +25,8 @@ if (!file.exists(country_table_path)) stop(paste("Country table not found:", cou
 life <- fread(life_table_path)
 country <- fread(country_table_path)
 
-cat(sprintf("   ✓ Life table: %d rows, %d columns\n", nrow(life), ncol(life)))
-cat(sprintf("   ✓ Country table: %d rows, %d columns\n", nrow(country), ncol(country)))
+cat(sprintf("    Life table: %d rows, %d columns\n", nrow(life), ncol(life)))
+cat(sprintf("    Country table: %d rows, %d columns\n", nrow(country), ncol(country)))
 
 # Check required columns
 required_cols <- c("ISO3", "Year", "Age", "lx", "mx")
@@ -37,11 +37,11 @@ if (length(missing) > 0) {
 
 # Add ISO3_suffix if missing
 if (!"ISO3_suffix" %in% names(life)) {
-  cat("   ⚠ Adding ISO3_suffix column to life_table\n")
+  cat(" Adding ISO3_suffix column to life_table\n")
   life[, ISO3_suffix := ""]
 }
 if (!"ISO3_suffix" %in% names(country)) {
-  cat("   ⚠ Adding ISO3_suffix column to country_table\n")
+  cat("Adding ISO3_suffix column to country_table\n")
   country[, ISO3_suffix := ""]
 }
 
@@ -164,7 +164,7 @@ prr_results <- life[, {
 }, by = .(ISO3, ISO3_suffix, Year)]
 
 calc_time <- difftime(Sys.time(), calc_start, units="secs")
-cat(sprintf("   ✓ Calculations took: %.2f seconds\n", calc_time))
+cat(sprintf("    Calculations took: %.2f seconds\n", calc_time))
 
 # === DIAGNOSTICS ===
 cat("\n4. Results summary...\n")
@@ -203,7 +203,7 @@ if (n_valid_PrR > 0) {
   cat("\n   Sample of results:\n")
   print(head(prr_results[!is.na(PrR)][order(-PrR), .(ISO3, Year, B, M, Z, PrR)], 10))
 } else {
-  cat("\n   ⚠ WARNING: No valid PrR values calculated!\n")
+  cat("\n  WARNING: No valid PrR values calculated!\n")
   cat("   This usually means mx is all zeros or NAs.\n")
   cat("   Check that fertility data (mx) was properly loaded.\n")
 }
@@ -222,7 +222,7 @@ cat(sprintf("   Added: %s\n", paste(new_cols, collapse=", ")))
 # === SAVE ===
 cat("\n6. Saving output...\n")
 fwrite(out, country_table_path)
-cat(sprintf("   ✓ Saved to: %s\n", country_table_path))
+cat(sprintf("Saved to: %s\n", country_table_path))
 
 # === DONE ===
 total_time <- difftime(Sys.time(), script_start, units="secs")
