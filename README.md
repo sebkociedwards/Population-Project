@@ -431,6 +431,9 @@ Age,lx,mx
 - Review diagnostic logging for merge operations
 - Verify hunter-gatherer data doesn't conflict with HMD/HFD countries
 
+#### 6. Permission denied when accsessing data
+- This is usually because the file is open on your device elsewhere
+
 ### Logging
 
 To see moreextensive debigging comments check 'Log_file.log' in your output directory
