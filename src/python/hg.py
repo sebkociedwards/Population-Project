@@ -158,7 +158,9 @@ def generate_hg_df() -> pd.DataFrame:
             log.warn(f"file not found: {filename}, skipping {name}")
     
     if not all_hg_data:
-        log.error("no hunter-gatherer data files found")
+        log.log("no hunter-gatherer data files found")
+        log.log("Analysis will continue with HMD/HFD data only")
+        log.log(f"To add HG data: place CSV files in {HG_DATA_DIR}/")
         return pd.DataFrame()
     
     # Combine all HG populations
