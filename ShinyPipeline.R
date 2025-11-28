@@ -181,7 +181,7 @@ ui <- dashboardPage(
           ),
           
           h5("Author:"),
-          p("Joshua - PhD Student in Population Genetics"),
+          p("Joshua - Undergraduate Student in Population Genetics"),
           
           h5("Version:"),
           p("2.0 - ", format(Sys.Date(), "%B %Y"))
