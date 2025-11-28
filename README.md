@@ -58,6 +58,7 @@ python-dotenv==1.1.1
 numpy
 openpyxl==3.1.5
 json5==0.12.1
+numpy
 ```
 ---
 
